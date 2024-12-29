@@ -56,6 +56,19 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+    queue-worker:
+        image: "sail-8.3/app"
+        container_name: laravel-queue
+        stop_signal: SIGTERM
+        depends_on:
+            - laravel.test
+        volumes:
+            - .:/var/www/html
+        networks:
+            - sail
+        environment:
+            WWWUSER: "${WWWUSER}"
+        command: [ "php", "/var/www/html/artisan", "queue:listen", "--tries=3" ]
 networks:
     sail:
         driver: bridge
