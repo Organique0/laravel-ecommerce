@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\ProuductStatusEnum;
+use App\Enums\ProductStatusEnum;
 use App\Enums\RolesEnum;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
@@ -15,6 +15,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
@@ -24,6 +25,11 @@ class ProductResource extends Resource
   protected static ?string $navigationIcon = 'heroicon-s-queue-list';
 
   protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+
+  public static function getEloquentQuery(): Builder
+  {
+    return parent::getEloquentQuery()->forVendor();
+  }
 
   public static function form(Form $form): Form
   {
@@ -85,8 +91,8 @@ class ProductResource extends Resource
         Forms\Components\TextInput::make('price')->required()->numeric(),
         Forms\Components\TextInput::make('quantity')->integer(),
         Select::make('status')
-          ->options(ProuductStatusEnum::labels())
-          ->default(ProuductStatusEnum::Draft->value)
+          ->options(ProductStatusEnum::labels())
+          ->default(ProductStatusEnum::Draft->value)
           ->required()
       ]);
 
@@ -107,14 +113,14 @@ class ProductResource extends Resource
           ->searchable(),
         Tables\Columns\TextColumn::make('status')
           ->badge()
-          ->colors(ProuductStatusEnum::colors()),
+          ->colors(ProductStatusEnum::colors()),
         Tables\Columns\TextColumn::make('department.name'),
         Tables\Columns\TextColumn::make('category.name'),
         Tables\Columns\TextColumn::make('created_at'),
       ])
       ->filters([
         Tables\Filters\SelectFilter::make('status')
-          ->options(ProuductStatusEnum::labels()),
+          ->options(ProductStatusEnum::labels()),
         Tables\Filters\SelectFilter::make('department_id')
           ->relationship('department', 'name')
       ])
@@ -143,6 +149,7 @@ class ProductResource extends Resource
       'edit' => Pages\EditProduct::route('/{record}/edit'),
       'images' => Pages\ProductImages::route('/{record}/images'),
       'variation-types' => Pages\ProductVariationTypes::route('/{record}/variation-types'),
+      'variations' => Pages\ProductVariations::route('/{record}/variations'),
     ];
   }
 
@@ -153,6 +160,8 @@ class ProductResource extends Resource
         Pages\EditProduct::class,
         Pages\ProductImages::class,
         Pages\ProductVariationTypes::class,
+        Pages\ProductVariations::class,
+
       ]);
   }
 
