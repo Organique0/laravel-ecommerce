@@ -33,6 +33,7 @@ export type Product = {
   title: string;
   slug: string;
   price: number;
+  quantity: number;
   image: string;
   images: Image[];
   short_description: string;
@@ -45,13 +46,13 @@ export type Product = {
     id: number;
     name: string;
   };
-  variationTypes: VariationType[],
+  variationTypes: VariationType[];
   variations: Array<{
     id: number;
     variation_type_options_id: number[],
     quantity: number;
     price: number;
-  }>
+  }>;
 }
 
 export type PaginationProps<T> = {

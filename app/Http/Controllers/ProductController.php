@@ -13,7 +13,6 @@ class ProductController extends Controller
       $products = Product::query()
         ->published()
         ->paginate(12);
-
       return Inertia::render('Home', [
         'products' => ProductListResource::collection($products)
       ]);
@@ -23,7 +22,7 @@ class ProductController extends Controller
     {
       return Inertia::render('Product/Show', [
         'product' => new ProductResource($product),
-        'variation' => request('options', [])
+        'variationOptions' => request('options', [])
       ]);
     }
 }
